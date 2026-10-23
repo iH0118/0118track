@@ -1,0 +1,9 @@
+#ifndef _0118TRACK_COMMON_H
+#define _0118TRACK_COMMON_H
+
+#include <SDL3/SDL.h>
+
+#define MENU_BUTTON_HEIGHT 48
+#define MENU_BUTTON_WIDTH 360
+
+#endif
