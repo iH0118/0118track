@@ -4,6 +4,7 @@
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_render.h>
+#include <stddef.h>
 #include <stdint.h>
 
 gui_container_t *
@@ -186,6 +187,57 @@ draw_gui_container (
 {
     update_widget_size(container->widget_top);
 
+    int position_x;
+    int position_y;
+
+    switch (container->alignment) {
+        case TOP_LEFT:
+        position_x = 0;
+        position_y = 0;
+        break;
+
+        case TOP_CENTER:
+        position_x = (size_x - container->widget_top->size_x) / 2;
+        position_y = 0;
+        break;
+
+        case TOP_RIGHT:
+        position_x = size_x - container->widget_top->size_x;
+        position_y = 0;
+        break;
+
+        case CENTER_LEFT:
+        position_x = 0;
+        position_y = (size_y - container->widget_top->size_y) / 2;
+        break;
+
+        case CENTER:
+        position_x = (size_x - container->widget_top->size_x) / 2;
+        position_y = (size_y - container->widget_top->size_y) / 2;
+        break;
+
+        case CENTER_RIGHT:
+        position_x = size_x - container->widget_top->size_x;
+        position_y = (size_y - container->widget_top->size_y) / 2;
+        break;
+
+        case BOTTOM_LEFT:
+        position_x = 0;
+        position_y = size_y - container->widget_top->size_y;
+        break;
+
+        case BOTTOM_CENTER:
+        position_x = (size_x - container->widget_top->size_x) / 2;
+        position_y = size_y - container->widget_top->size_y;
+        break;
+
+        case BOTTOM_RIGHT:
+        position_x = size_x - container->widget_top->size_x;
+        position_y = size_y - container->widget_top->size_y;
+        break;
+    }
+
+    draw_widget(container->widget_top, renderer, position_x, position_y);
 }
 
 void

@@ -28,7 +28,7 @@ struct runtime {
 };
 
 void init_runtime (
-    runtime_t **runtime
+    runtime_t **p_runtime
 );
 
 void cleanup_runtime (

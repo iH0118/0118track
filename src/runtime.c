@@ -4,25 +4,27 @@
 #include "menu.h"
 
 void init_runtime (
-    runtime_t **runtime
+    runtime_t **p_runtime
 )
 {
-    *runtime = SDL_malloc(sizeof(runtime_t));
+    *p_runtime = SDL_malloc(sizeof(runtime_t));
 
-    (*runtime)->active_context = CONTEXT_NONE;
+    runtime_t *runtime = *p_runtime;
+
+    runtime->active_context = CONTEXT_NONE;
 
     SDL_CreateWindowAndRenderer(
         "0118track -- DEVELOPMENT BUILD",
         960,
         540,
         SDL_WINDOW_RESIZABLE,
-        &(*runtime)->window,
-        &(*runtime)->renderer
+        &runtime->window,
+        &runtime->renderer
     );
 
-    SDL_GetWindowSize((*runtime)->window, &(*runtime)->window_size_x, &(*runtime)->window_size_y);
+    SDL_GetWindowSize(runtime->window, &runtime->window_size_x, &runtime->window_size_y);
 
-    (*runtime)->menu = create_menu();
+    runtime->menu = create_menu();
     
 }
 
