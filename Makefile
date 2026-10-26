@@ -2,13 +2,13 @@ CC := gcc
 LD := ld
 OBJCOPY := objcopy
 CFLAGS := -Iinclude -Wall -Wextra -Wno-unused-parameter -c -g
-LDFLAGS := -lm -lSDL3
+LDFLAGS := -lm -lSDL3 -lSDL3_ttf
 
 CC_WIN := x86_64-w64-mingw32-gcc
 LD_WIN := x86_64-w64-mingw32-ld
 OBJCOPY_WIN := x86_64-w64-mingw32-objcopy
 CFLAGS_WIN := -Ilib/x86_64-w64-mingw32/include
-LDFLAGS_WIN := -Llib/x86_64-w64-mingw32/lib
+LDFLAGS_WIN := -Llib/x86_64-w64-mingw32/bin
 
 EXE_NAME := 0118track
 BUILD_DIR_LIN := build/x86_64-linux-gnu
@@ -27,6 +27,7 @@ OBJS_ASSETS_LIN :=$(patsubst assets/%,$(OBJ_CACHE_LIN)/asset_%.o,$(ASSETS))
 OBJS_ASSETS_WIN :=$(patsubst assets/%,$(OBJ_CACHE_WIN)/asset_%.o,$(ASSETS))
 OBJS_LIN := $(OBJS_SRC_LIN) $(OBJS_ASSETS_LIN)
 OBJS_WIN := $(OBJS_SRC_WIN) $(OBJS_ASSETS_WIN)
+ASSET_HEADERS := $(patsubst assets/%,include/assets/%.h,$(ASSETS))
 DEPS := $(patsubst src/%.c,$(DEP_CACHE)/%.d,$(SRCS))
 SHADERS_SRC := $(shell find shaders -name '*.vert' -or -name '*.frag')
 SHADERS_SPV := $(patsubst shaders/%,$(SPV_CACHE)/%.spv,$(SHADERS_SRC))
@@ -65,6 +66,17 @@ $(DEP_CACHE)/%.d: src/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -E -MM $< -MF $@
 
+asset_headers: $(ASSET_HEADERS)
+
+include/assets/%.h: assets/%
+	@mkdir -p $(dir $@)
+	@echo "/* automatically generated file -- do not edit */" > $@
+	@echo "#ifndef _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "#define _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "    extern const unsigned char _binary_$(shell echo $< | sed 's/[[:punct:]]/_/g')_start[];" >> $@
+	@echo "    extern const unsigned char _binary_$(shell echo $< | sed 's/[[:punct:]]/_/g')_end[];" >> $@
+	@echo "#endif" >> $@
+
 $(SPV_CACHE)/%.spv: shaders/%
 	@mkdir -p $(dir $@)
 	glslc -c $< -o $@
@@ -82,6 +94,6 @@ clean_objs_win:
 clean_deps:
 	rm -f $(DEPS)
 
-.PHONY: build clean_all clean_objs clean_deps
+.PHONY: build_lin build_win clean_all clean_objs clean_objs_lin clean_objs_win make_deps clean_deps asset_headers
 
 -include $(DEPS)

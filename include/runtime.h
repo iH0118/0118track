@@ -20,6 +20,8 @@ enum runtime_context {
 struct runtime {
     SDL_Window *window;
     SDL_Renderer *renderer;
+    TTF_TextEngine *text_engine;
+    TTF_Font *font;
     runtime_context_t active_context;
     menu_t *menu;
     int window_size_x;
