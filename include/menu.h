@@ -11,7 +11,12 @@ struct menu {
 };
 
 menu_t *
-create_menu ();
+create_menu (
+    TTF_TextEngine *text_engine,
+    TTF_Font *font01,
+    TTF_Font *font02,
+    TTF_Font *font03
+);
 
 void
 destroy_menu (

@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stddef.h>
 #include "types.h"
 
@@ -35,15 +36,16 @@ struct widget_data_array {
 };
 
 struct widget_data_text {
-    char *text;
-    float size;
+    TTF_Text *text;
     alignment_direction_t alignment;
 };
 
 struct widget_data_button {
     bool hovered;
     bool pressed;
-    char *label;
+    TTF_Text *label;
+    int label_size_x;
+    int label_size_y;
     void (*callback_press)(void);
 };
 
@@ -83,14 +85,17 @@ create_widget_array (
 gui_widget_t *
 create_widget_button (
     char *label,
-    void (*callback_press)(void)
+    void (*callback_press)(void),
+    TTF_TextEngine *text_engine,
+    TTF_Font *font
 );
 
 gui_widget_t *
 create_widget_text (
     char *text,
-    float size,
-    alignment_direction_t alignment
+    alignment_direction_t alignment,
+    TTF_TextEngine *text_engine,
+    TTF_Font *font
 );
 
 gui_widget_t *

@@ -21,7 +21,10 @@ struct runtime {
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_TextEngine *text_engine;
-    TTF_Font *font;
+    SDL_IOStream *font_io;
+    TTF_Font *font01;
+    TTF_Font *font02;
+    TTF_Font *font03;
     runtime_context_t active_context;
     menu_t *menu;
     int window_size_x;

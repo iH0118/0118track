@@ -4,6 +4,7 @@
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_render.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -42,14 +43,17 @@ create_widget_array (
 gui_widget_t *
 create_widget_button (
     char *label,
-    void (*callback_press)(void)
+    void (*callback_press)(void),
+    TTF_TextEngine *text_engine,
+    TTF_Font *font
 )
 {
     gui_widget_t *widget = SDL_malloc(sizeof(gui_widget_t));
     widget->type = WIDGET_BUTTON;
     widget->data.button.hovered = false;
     widget->data.button.pressed = false;
-    widget->data.button.label = label;
+    widget->data.button.label = TTF_CreateText(text_engine, font, label, 0);
+    TTF_GetTextSize(widget->data.button.label, &widget->data.button.label_size_x, &widget->data.button.label_size_y);
     widget->data.button.callback_press = callback_press;
     widget->size_x = MENU_BUTTON_WIDTH;
     widget->size_y = MENU_BUTTON_HEIGHT;
@@ -59,17 +63,16 @@ create_widget_button (
 gui_widget_t *
 create_widget_text (
     char *text,
-    float size,
-    alignment_direction_t alignment
+    alignment_direction_t alignment,
+    TTF_TextEngine *text_engine,
+    TTF_Font *font
 )
 {
     gui_widget_t *widget = SDL_malloc(sizeof(gui_widget_t));
     widget->type = WIDGET_TEXT;
-    widget->data.text.text = text;
-    widget->data.text.size = size;
+    widget->data.text.text = TTF_CreateText(text_engine, font, text, 0);
+    TTF_GetTextSize(widget->data.text.text, &widget->size_x, &widget->size_y);
     widget->data.text.alignment = alignment;
-    widget->size_x = 0;
-    widget->size_y = 0;
     return widget;
 }
 
@@ -166,8 +169,6 @@ update_widget_size (
         break;
 
         case WIDGET_TEXT:
-        widget->size_x = 0;
-        widget->size_y = 0;
         break;
 
         case WIDGET_SELECTOR:
@@ -285,9 +286,13 @@ draw_widget (
         //outline
         SDL_SetRenderDrawColor(renderer, 250, 174, 123, 255);
         SDL_RenderRect(renderer, &bounds);
+
+        //label
+        TTF_DrawRendererText(widget->data.button.label, x + (widget->size_x - widget->data.button.label_size_x) / 2.0f, y + (widget->size_y - widget->data.button.label_size_y) / 2.0f);
         break;
 
         case WIDGET_TEXT:
+        TTF_DrawRendererText(widget->data.text.text, x, y);
         break;
 
         case WIDGET_SELECTOR:
