@@ -7,8 +7,8 @@ LDFLAGS := -lm -lSDL3 -lSDL3_ttf
 CC_WIN := x86_64-w64-mingw32-gcc
 LD_WIN := x86_64-w64-mingw32-ld
 OBJCOPY_WIN := x86_64-w64-mingw32-objcopy
-CFLAGS_WIN := -Ilib/x86_64-w64-mingw32/include
-LDFLAGS_WIN := -Llib/x86_64-w64-mingw32/bin
+CFLAGS_WIN := -Ilib/x86_64-w64-mingw32/include $(CFLAGS)
+LDFLAGS_WIN := -static -Llib/x86_64-w64-mingw32/lib -lm -lSDL3.dll -lSDL3_ttf.dll
 
 EXE_NAME := 0118track
 BUILD_DIR_LIN := build/x86_64-linux-gnu
@@ -50,11 +50,11 @@ build_win: $(BUILD_DIR_WIN)/$(EXE_NAME).exe $(SHADERS_SPV)
 
 $(BUILD_DIR_WIN)/$(EXE_NAME).exe: $(OBJS_WIN)
 	@mkdir -p $(dir $@)
-	$(CC_WIN) $^ $(LDFLAGS_WIN) $(LDFLAGS) -o $@
+	$(CC_WIN) $^ $(LDFLAGS_WIN) -o $@
 
 $(OBJ_CACHE_WIN)/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	$(CC_WIN) $(CFLAGS_WIN) $(CFLAGS) $< -o $@
+	$(CC_WIN) $(CFLAGS_WIN) $< -o $@
 
 $(OBJ_CACHE_WIN)/asset_%.o: assets/%
 	@mkdir -p $(dir $@)
