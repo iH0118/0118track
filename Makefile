@@ -8,7 +8,7 @@ CC_WIN := x86_64-w64-mingw32-gcc
 LD_WIN := x86_64-w64-mingw32-ld
 OBJCOPY_WIN := x86_64-w64-mingw32-objcopy
 CFLAGS_WIN := -Ilib/x86_64-w64-mingw32/include $(CFLAGS)
-LDFLAGS_WIN := -static -Llib/x86_64-w64-mingw32/lib -lm -lSDL3.dll -lSDL3_ttf.dll
+LDFLAGS_WIN := -Llib/x86_64-w64-mingw32/bin $(LDFLAGS)
 
 EXE_NAME := 0118track
 BUILD_DIR_LIN := build/x86_64-linux-gnu
@@ -47,6 +47,7 @@ $(OBJ_CACHE_LIN)/asset_%.o: assets/%
 	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
 build_win: $(BUILD_DIR_WIN)/$(EXE_NAME).exe $(SHADERS_SPV)
+	cp lib/x86_64-w64-mingw32/bin/* $(BUILD_DIR_WIN)
 
 $(BUILD_DIR_WIN)/$(EXE_NAME).exe: $(OBJS_WIN)
 	@mkdir -p $(dir $@)
