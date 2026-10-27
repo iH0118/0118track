@@ -5,5 +5,6 @@
 
 #define MENU_BUTTON_HEIGHT 48
 #define MENU_BUTTON_WIDTH 360
+#define GUI_RENDERER_NUM_FONTS 4
 
 #endif

@@ -5,6 +5,7 @@
 #include <SDL3/SDL_render.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <stddef.h>
+#include "gui_renderer.h"
 #include "types.h"
 
 typedef enum widget_type widget_type_t;
@@ -26,6 +27,8 @@ struct gui_container {
     alignment_direction_t alignment;
     gui_widget_t *widget_top;
     int padding;
+    int size_x;
+    int size_y;
 };
 
 struct widget_data_array {
@@ -61,12 +64,7 @@ struct gui_widget {
         widget_data_button_t button;
         widget_data_selector_t selector;
     } data;
-    int size_x;
-    int size_y;
-};
-
-struct widget_create_info {
-    widget_type_t type;
+    SDL_Rect bounds;
 };
 
 gui_container_t *
@@ -86,16 +84,16 @@ gui_widget_t *
 create_widget_button (
     char *label,
     void (*callback_press)(void),
-    TTF_TextEngine *text_engine,
-    TTF_Font *font
+    gui_renderer_t *gui_renderer,
+    int font_index
 );
 
 gui_widget_t *
 create_widget_text (
     char *text,
     alignment_direction_t alignment,
-    TTF_TextEngine *text_engine,
-    TTF_Font *font
+    gui_renderer_t *gui_renderer,
+    int font_index
 );
 
 gui_widget_t *
@@ -113,24 +111,32 @@ destroy_widget (
 );
 
 void
+refresh_gui_container (
+    gui_container_t *container,
+    int size_x,
+    int size_y
+);
+
+void
 update_widget_size (
+    gui_widget_t *widget
+);
+
+void
+update_widget_position (
     gui_widget_t *widget
 );
 
 void
 draw_gui_container (
     gui_container_t *container,
-    SDL_Renderer *renderer,
-    int size_x,
-    int size_y
+    gui_renderer_t *gui_renderer
 );
 
 void
 draw_widget (
     gui_widget_t *widget,
-    SDL_Renderer *renderer,
-    int x,
-    int y
+    gui_renderer_t *gui_renderer
 );
 
 #endif

@@ -1,3 +1,4 @@
+#include "gui_registry.h"
 #define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
@@ -196,11 +197,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     switch (runtime->active_context)
     {
         case CONTEXT_MENU:
-        SDL_SetRenderDrawColor(runtime->renderer, 67, 35, 113, 255);
-        SDL_RenderClear(runtime->renderer);
-        draw_gui_container(runtime->menu->container_info, runtime->renderer, runtime->window_size_x, runtime->window_size_y);
-        draw_gui_container(runtime->menu->container_buttons, runtime->renderer, runtime->window_size_x, runtime->window_size_y);
-        SDL_RenderPresent(runtime->renderer);
+        update_registry(runtime->menu->registry);
+        SDL_SetRenderDrawColor(runtime->gui_renderer->renderer, 67, 35, 113, 255);
+        SDL_RenderClear(runtime->gui_renderer->renderer);
+        draw_gui_container(runtime->menu->container_info, runtime->gui_renderer);
+        draw_gui_container(runtime->menu->container_buttons, runtime->gui_renderer);
+        SDL_RenderPresent(runtime->gui_renderer->renderer);
         break;
 
         default:
@@ -277,6 +279,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
             &runtime->window_size_x,
             &runtime->window_size_y
         );
+
+        refresh_menu(runtime->menu, runtime->window_size_x, runtime->window_size_y);
         break;
     }
 

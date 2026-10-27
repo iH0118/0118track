@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include "menu.h"
+#include "gui_renderer.h"
 
 typedef enum runtime_context runtime_context_t;
 typedef struct runtime runtime_t;
@@ -19,24 +20,20 @@ enum runtime_context {
 
 struct runtime {
     SDL_Window *window;
-    SDL_Renderer *renderer;
-    TTF_TextEngine *text_engine;
-    SDL_IOStream *font_io;
-    TTF_Font *font01;
-    TTF_Font *font02;
-    TTF_Font *font03;
+    gui_renderer_t *gui_renderer;
     runtime_context_t active_context;
     menu_t *menu;
     int window_size_x;
     int window_size_y;
-    
 };
 
-void init_runtime (
+void 
+init_runtime (
     runtime_t **p_runtime
 );
 
-void cleanup_runtime (
+void 
+cleanup_runtime (
     runtime_t *runtime
 );
 
