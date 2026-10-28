@@ -46,7 +46,7 @@ define create_access_header =
 @echo "#endif" >> $@
 endef
 
-build_lin: $(BUILD_DIR_LIN)/$(EXE_NAME) $(SHADERS_SPV)
+build_lin: $(BUILD_DIR_LIN)/$(EXE_NAME)
 
 $(BUILD_DIR_LIN)/$(EXE_NAME): $(OBJS_LIN)
 	@mkdir -p $(dir $@)
@@ -64,7 +64,7 @@ $(OBJ_CACHE_LIN)/shader_%.o: $(SPV_CACHE)/%.spv
 	@mkdir -p $(dir $@)
 	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
-build_win: $(BUILD_DIR_WIN)/$(EXE_NAME).exe $(SHADERS_SPV)
+build_win: $(BUILD_DIR_WIN)/$(EXE_NAME).exe
 	cp lib/x86_64-w64-mingw32/bin/* $(BUILD_DIR_WIN)
 
 $(BUILD_DIR_WIN)/$(EXE_NAME).exe: $(OBJS_WIN)
