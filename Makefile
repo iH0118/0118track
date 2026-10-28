@@ -36,16 +36,6 @@ OBJS_SHADER_WIN := $(patsubst $(SPV_CACHE)/%.spv,$(OBJ_CACHE_WIN)/shader_%.o,$(S
 OBJS_LIN := $(OBJS_SRC_LIN) $(OBJS_ASSETS_LIN) $(OBJS_SHADER_LIN)
 OBJS_WIN := $(OBJS_SRC_WIN) $(OBJS_ASSETS_WIN) $(OBJS_SHADER_WIN)
 
-define create_access_header =
-@mkdir -p $(dir $@)
-@echo "/* automatically generated file -- do not edit */" > $@
-@echo "#ifndef _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
-@echo "#define _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
-@echo "    extern const unsigned char _binary_$(shell echo $< | sed 's/[[:punct:]]/_/g')_start[];" >> $@
-@echo "    extern const unsigned char _binary_$(shell echo $< | sed 's/[[:punct:]]/_/g')_end[];" >> $@
-@echo "#endif" >> $@
-endef
-
 build_lin: $(BUILD_DIR_LIN)/$(EXE_NAME)
 
 $(BUILD_DIR_LIN)/$(EXE_NAME): $(OBJS_LIN)
@@ -58,11 +48,11 @@ $(OBJ_CACHE_LIN)/%.o: src/%.c
 
 $(OBJ_CACHE_LIN)/asset_%.o: assets/%
 	@mkdir -p $(dir $@)
-	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
+	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --binary-symbol-prefix=_asset_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g') --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
 $(OBJ_CACHE_LIN)/shader_%.o: $(SPV_CACHE)/%.spv
 	@mkdir -p $(dir $@)
-	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
+	$(OBJCOPY) -I binary -O elf64-x86-64 -B i386 --binary-symbol-prefix=_shader_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g') --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
 build_win: $(BUILD_DIR_WIN)/$(EXE_NAME).exe
 	cp lib/x86_64-w64-mingw32/bin/* $(BUILD_DIR_WIN)
@@ -77,11 +67,11 @@ $(OBJ_CACHE_WIN)/%.o: src/%.c
 
 $(OBJ_CACHE_WIN)/asset_%.o: assets/%
 	@mkdir -p $(dir $@)
-	$(OBJCOPY_WIN) -I binary -O pe-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
+	$(OBJCOPY_WIN) -I binary -O pe-x86-64 -B i386 --binary-symbol-prefix=_asset_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g') --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
 $(OBJ_CACHE_WIN)/shader_%.o: $(SPV_CACHE)/%.spv
 	@mkdir -p $(dir $@)
-	$(OBJCOPY_WIN) -I binary -O pe-x86-64 -B i386 --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
+	$(OBJCOPY_WIN) -I binary -O pe-x86-64 -B i386 --binary-symbol-prefix=_shader_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g') --rename-section .data=.rodata,alloc,load,readonly,data,contents $< $@
 
 make_deps: $(DEPS)
 
@@ -92,10 +82,22 @@ $(DEP_CACHE)/%.d: src/%.c
 asset_headers: $(ASSET_HEADERS) $(SHADER_HEADERS)
 
 include/assets/%.h: assets/%
-	$(create_access_header)
+	@mkdir -p $(dir $@)
+	@echo "/* automatically generated file -- do not edit */" > $@
+	@echo "#ifndef _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "#define _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "    extern const unsigned char _asset_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g')_start[];" >> $@
+	@echo "    extern const unsigned char _asset_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g')_end[];" >> $@
+	@echo "#endif" >> $@
 
 include/shaders/%.h: $(SPV_CACHE)/%.spv
-	$(create_access_header)
+	@mkdir -p $(dir $@)
+	@echo "/* automatically generated file -- do not edit */" > $@
+	@echo "#ifndef _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "#define _0118TRACK_$(shell echo $< | tr [:lower:] [:upper:] | sed 's/[[:punct:]]/_/g')_H" >> $@
+	@echo "    extern const unsigned char _shader_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g')_start[];" >> $@
+	@echo "    extern const unsigned char _shader_$(shell echo $(notdir $<) | sed 's/[[:punct:]]/_/g')_end[];" >> $@
+	@echo "#endif" >> $@
 
 $(SPV_CACHE)/%.spv: shaders/%
 	@mkdir -p $(dir $@)

@@ -15,8 +15,8 @@ create_gui_renderer (
     TTF_Init();
     gui_renderer->text_engine = TTF_CreateRendererTextEngine(gui_renderer->renderer);
     gui_renderer->font_io = SDL_IOFromConstMem(
-        _binary_assets_SystemTTF_ttf_start, 
-        _binary_assets_SystemTTF_ttf_end - _binary_assets_SystemTTF_ttf_start
+        _asset_SystemTTF_ttf_start, 
+        _asset_SystemTTF_ttf_end - _asset_SystemTTF_ttf_start
     );
 
     gui_renderer->num_fonts = GUI_RENDERER_NUM_FONTS;
