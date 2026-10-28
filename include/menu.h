@@ -11,6 +11,7 @@ struct menu {
     gui_container_t *container_buttons;
     gui_container_t *container_info;
     gui_registry_t *registry;
+    bool should_quit;
 };
 
 menu_t *
@@ -19,10 +20,16 @@ create_menu (
 );
 
 void 
-refresh_menu (
+update_menu_size (
     menu_t *menu,
     int size_x,
     int size_y
+);
+
+void
+input_handler_menu (
+    menu_t *menu,
+    SDL_Event *event
 );
 
 void

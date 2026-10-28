@@ -13,7 +13,7 @@ create_registry ()
 }
 
 void
-update_registry (
+query_registry (
     gui_registry_t *registry
 )
 {

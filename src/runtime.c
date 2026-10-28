@@ -27,7 +27,7 @@ init_runtime (
     runtime->gui_renderer = create_gui_renderer(runtime->window);
 
     runtime->menu = create_menu(runtime->gui_renderer);
-    refresh_menu(runtime->menu, runtime->window_size_x, runtime->window_size_y);
+    update_menu_size(runtime->menu, runtime->window_size_x, runtime->window_size_y);
 }
 
 void 

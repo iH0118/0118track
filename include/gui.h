@@ -49,11 +49,17 @@ struct widget_data_button {
     TTF_Text *label;
     int label_size_x;
     int label_size_y;
-    void (*callback_press)(void);
+    void (*callback_press)(void *);
 };
 
 struct widget_data_selector {
-
+    bool hovered;
+    bool pressed;
+    bool open;
+    TTF_Text *label;
+    int num_options;
+    TTF_Text **options;
+    int selected_option;
 };
 
 struct gui_widget {
@@ -83,7 +89,7 @@ create_widget_array (
 gui_widget_t *
 create_widget_button (
     char *label,
-    void (*callback_press)(void),
+    void (*callback_press)(void *),
     gui_renderer_t *gui_renderer,
     int font_index
 );

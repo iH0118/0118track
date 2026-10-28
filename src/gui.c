@@ -40,7 +40,7 @@ create_widget_array (
 gui_widget_t *
 create_widget_button (
     char *label,
-    void (*callback_press)(void),
+    void (*callback_press)(void *),
     gui_renderer_t *gui_renderer,
     int font_index
 )
