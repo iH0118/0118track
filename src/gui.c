@@ -1,8 +1,7 @@
 #include "gui.h"
 #include "common.h"
 #include "types.h"
-#include <SDL3/SDL_rect.h>
-#include <SDL3/SDL_render.h>
+#include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <stddef.h>
 

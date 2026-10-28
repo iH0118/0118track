@@ -1,9 +1,6 @@
-#include "gui_registry.h"
+#include <SDL3/SDL.h>
 #include "gui.h"
-#include <SDL3/SDL_mouse.h>
-#include <SDL3/SDL_oldnames.h>
-#include <SDL3/SDL_rect.h>
-#include <SDL3/SDL_stdinc.h>
+#include "gui_registry.h"
 
 gui_registry_t *
 create_registry ()
