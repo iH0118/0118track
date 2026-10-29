@@ -2,6 +2,7 @@
 #define _0118TRACK_GUI_REGISTRY_H
 
 #include "gui.h"
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
 
 typedef struct registry_entry registry_entry_t;
@@ -22,6 +23,13 @@ create_registry ();
 void
 query_registry (
     gui_registry_t *registry
+);
+
+void
+registry_process_event (
+    gui_registry_t *registry,
+    SDL_Event *event,
+    void *callback_runtime
 );
 
 void

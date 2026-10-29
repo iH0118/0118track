@@ -1,5 +1,4 @@
 #include "gui.h"
-#include "common.h"
 #include "types.h"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -17,7 +16,6 @@ create_gui_container (
     container->widget_top = NULL;
     container->size_x = 0;
     container->size_y = 0;
-
     return container;
 }
 
@@ -34,6 +32,7 @@ create_widget_array (
     widget->data.array.array_size = array_size;
     widget->data.array.direction = direction;
     widget->data.array.spacing = spacing;
+    widget->disabled = false;
     return widget;
 }
 
@@ -42,7 +41,9 @@ create_widget_button (
     char *label,
     void (*callback_press)(void *),
     gui_renderer_t *gui_renderer,
-    int font_index
+    int font_index,
+    int width,
+    int height
 )
 {
     gui_widget_t *widget = SDL_malloc(sizeof(gui_widget_t));
@@ -52,8 +53,9 @@ create_widget_button (
     widget->data.button.label = TTF_CreateText(gui_renderer->text_engine, gui_renderer->fonts[font_index], label, 0);
     TTF_GetTextSize(widget->data.button.label, &widget->data.button.label_size_x, &widget->data.button.label_size_y);
     widget->data.button.callback_press = callback_press;
-    widget->bounds.w = MENU_BUTTON_WIDTH;
-    widget->bounds.h = MENU_BUTTON_HEIGHT;
+    widget->data.button.size_x = width;
+    widget->data.button.size_y = height;
+    widget->disabled = false;
     return widget;
 }
 
@@ -70,6 +72,7 @@ create_widget_text (
     widget->data.text.text = TTF_CreateText(gui_renderer->text_engine, gui_renderer->fonts[font_index], text, 0);
     TTF_GetTextSize(widget->data.text.text, &widget->bounds.w, &widget->bounds.h);
     widget->data.text.alignment = alignment;
+    widget->disabled = false;
     return widget;
 }
 
@@ -79,6 +82,7 @@ create_widget_selector (
 {
     gui_widget_t *widget = SDL_malloc(sizeof(gui_widget_t));
     widget->type = WIDGET_SELECTOR;
+    widget->disabled = false;
     return widget;
 }
 
@@ -218,8 +222,8 @@ update_widget_size (
         break;
 
         case WIDGET_BUTTON:
-        widget->bounds.w = MENU_BUTTON_WIDTH;
-        widget->bounds.h = MENU_BUTTON_HEIGHT;
+        widget->bounds.w = widget->data.button.size_x;
+        widget->bounds.h = widget->data.button.size_y;
         break;
 
         case WIDGET_TEXT:

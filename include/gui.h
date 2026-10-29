@@ -46,6 +46,8 @@ struct widget_data_text {
 struct widget_data_button {
     bool hovered;
     bool pressed;
+    int size_x;
+    int size_y;
     TTF_Text *label;
     int label_size_x;
     int label_size_y;
@@ -57,6 +59,8 @@ struct widget_data_selector {
     bool pressed;
     bool open;
     TTF_Text *label;
+    int label_size_x;
+    int label_size_y;
     int num_options;
     TTF_Text **options;
     int selected_option;
@@ -71,6 +75,7 @@ struct gui_widget {
         widget_data_selector_t selector;
     } data;
     SDL_Rect bounds;
+    bool disabled;
 };
 
 gui_container_t *
@@ -91,7 +96,9 @@ create_widget_button (
     char *label,
     void (*callback_press)(void *),
     gui_renderer_t *gui_renderer,
-    int font_index
+    int font_index,
+    int width,
+    int height
 );
 
 gui_widget_t *

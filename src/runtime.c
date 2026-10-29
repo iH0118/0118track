@@ -14,6 +14,7 @@ init_runtime (
     runtime_t *runtime = *p_runtime;
 
     runtime->active_context = CONTEXT_NONE;
+    runtime->should_quit = false;
 
     runtime->window = SDL_CreateWindow(
         "0118track -- DEVELOPMENT BUILD",

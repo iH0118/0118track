@@ -25,6 +25,7 @@ struct runtime {
     menu_t *menu;
     int window_size_x;
     int window_size_y;
+    bool should_quit;
 };
 
 void 

@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
 #include "gui.h"
 #include "gui_registry.h"
 
@@ -25,11 +26,41 @@ query_registry (
         SDL_FRect bounds_f;
         SDL_RectToFRect(&registry->entries[i].widget->bounds, &bounds_f);
 
-        if (registry->entries[i].widget->type == WIDGET_BUTTON)
+        if (!registry->entries[i].widget->disabled && registry->entries[i].widget->type == WIDGET_BUTTON)
         {
             registry->entries[i].widget->data.button.hovered = SDL_PointInRectFloat(&mouse_position, &bounds_f);
             registry->entries[i].widget->data.button.pressed = (mouse_buttons & SDL_BUTTON_LMASK) && registry->entries[i].widget->data.button.hovered;
         }
+    }
+}
+
+void
+registry_process_event (
+    gui_registry_t *registry,
+    SDL_Event *event,
+    void *callback_runtime
+)
+{
+    SDL_FPoint mouse_position;
+
+    switch (event->type)
+    {
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        mouse_position.x = event->button.x;
+        mouse_position.y = event->button.y;
+
+        for (int i = 0; i < registry->num_entries; i++)
+        {
+            SDL_FRect bounds;
+            SDL_RectToFRect(&registry->entries[i].widget->bounds, &bounds);
+
+            if (SDL_PointInRectFloat(&mouse_position, &bounds) && !registry->entries[i].widget->disabled && registry->entries[i].widget->type == WIDGET_BUTTON && registry->entries[i].widget->data.button.callback_press)
+            {
+                registry->entries[i].widget->data.button.callback_press(callback_runtime);
+            }
+        }
+
+        break;
     }
 }
 

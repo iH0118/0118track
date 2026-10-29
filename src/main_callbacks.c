@@ -198,12 +198,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     switch (runtime->active_context)
     {
         case CONTEXT_MENU:
-        query_registry(runtime->menu->registry);
-        SDL_SetRenderDrawColor(runtime->gui_renderer->renderer, 67, 35, 113, 255);
-        SDL_RenderClear(runtime->gui_renderer->renderer);
-        draw_gui_container(runtime->menu->container_info, runtime->gui_renderer);
-        draw_gui_container(runtime->menu->container_buttons, runtime->gui_renderer);
-        SDL_RenderPresent(runtime->gui_renderer->renderer);
+        draw_frame_menu(runtime->menu, runtime->gui_renderer);
         break;
 
         default:
@@ -287,8 +282,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
     switch (runtime->active_context) {
         case CONTEXT_MENU:
-        input_handler_menu(runtime->menu, event);
-        if (runtime->menu->should_quit)
+        input_handler_menu(runtime->menu, event, runtime);
+        if (runtime->should_quit)
         {
             return SDL_APP_SUCCESS;
         }
