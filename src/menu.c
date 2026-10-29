@@ -4,7 +4,9 @@
 #include "gui_registry.h"
 #include "runtime.h"
 #include "types.h"
+#include <SDL3/SDL_events.h>
 #include <SDL3/SDL_rect.h>
+#include <SDL3/SDL_scancode.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
 void
@@ -137,6 +139,10 @@ input_handler_menu (
 
         case MENU_SCREEN_SETTINGS:
         registry_process_event(menu->settings_registry, event, callback_runtime);
+        if (event->type == SDL_EVENT_KEY_DOWN && event->key.scancode == SDL_SCANCODE_ESCAPE)
+        {
+            menu->active_screen = MENU_SCREEN_MAIN;
+        }
         break;
     }
 }
